@@ -325,6 +325,12 @@ The parity test project (`HauptwerkVoicing.Parity.Tests`) should run in CI on ev
 - **24-bit PCM handling** — treat samples as signed 24-bit integers in 32-bit containers internally; only convert to float at the FFT boundary, and use double precision for SPL integration to avoid rounding drift over long captures.
 - **YAML schema for voicing profiles** — design the schema in Phase 3, not now. But keep the profile directory layout from the solution layout above so Phase 3 has a place to land.
 - **No cloud services, no telemetry, no analytics** — this is a local tool. Everything stays on the user's Mac.
+- **macOS quarantine xattrs on source files poison Mac Catalyst builds** — if any file in the App project carries `com.apple.quarantine` (Safari-downloaded, AirDropped, extracted from a zip, etc.), the xattr is copied into the built `.app` bundle, and Gatekeeper rejects the whole app at launch with "HauptwerkVoicing.App.app is damaged." The ad-hoc code signature itself is fine; Gatekeeper just refuses any bundle that contains quarantined files. This first bit when `src/HauptwerkVoicing.App/wwwroot/` and `src/HauptwerkVoicing.App/Resources/` were uploaded to GitHub via Safari and the xattrs rode along when copies landed on a Mac. Fix on first checkout (and any time the error reappears):
+  ```bash
+  xattr -cr ~/Hauptwerk-Voicing/src/HauptwerkVoicing.App
+  rm -rf ~/Hauptwerk-Voicing/src/HauptwerkVoicing.App/{bin,obj}
+  ```
+  Then rebuild. `xattr -cr` is recursive and safe; it only clears extended attributes, not file contents. Git does not track xattrs, so once stripped they don't come back from `git pull` — but a clone that went through Safari (e.g., "Download ZIP" from GitHub's web UI) will reintroduce them. Prefer `git clone` over ZIP downloads.
 
 ---
 
