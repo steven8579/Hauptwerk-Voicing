@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HauptwerkVoicing.App/HauptwerkVoicing.App.csproj" />
+    <Project Path="src/HauptwerkVoicing.Audio.Mac/HauptwerkVoicing.Audio.Mac.csproj" />
+    <Project Path="src/HauptwerkVoicing.Core/HauptwerkVoicing.Core.csproj" />
+    <Project Path="src/HauptwerkVoicing.Shared/HauptwerkVoicing.Shared.csproj" />
+  </Folder>
+</Solution>
